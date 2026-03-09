@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gambit.gg</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- MAINTENANCE PAGE -->
+<div id="maintenancePage" class="maintenance-page" style="display:none;">
+  <div class="maint-box">
+    <div class="maint-icon">⚠️</div>
+    <div class="maint-title">Under Maintenance</div>
+    <p class="maint-msg">The site is currently under maintenance. If there are any problems please make a ticket in our <a href="https://discord.gg/invite" target="_blank" class="maint-discord"><strong><u>support server</u></strong></a>.</p>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div id="intro" class="intro-screen">
+  <div class="intro-glow"></div>
+  <div class="intro-content">
+    <div class="intro-logo" id="introLogo"></div>
+    <div class="intro-line"></div>
+  </div>
+</div>
+
+<!-- LANDING PAGE -->
+<div id="main" class="main-page" style="display:none;">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="online-dot"></div>
+      <span class="sidebar-title">Live Chat</span>
+      <span class="sidebar-count" id="onlineCount">0 online</span>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-empty"><p>No messages yet</p></div>
+    </div>
+    <div class="chat-input-area">
+      <button class="chat-signin-btn" onclick="openModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Sign in to chat
+      </button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="navbar">
+      <div class="nav-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+      <div class="nav-links">
+        <button class="nav-link" onclick="openModal()">Coinflip</button>
+        <button class="nav-link" onclick="openModal()">Mines</button>
+        <button class="nav-link" onclick="openModal()">Jackpot</button>
+        <button class="nav-signin" onclick="openModal()">Sign In</button>
+      </div>
+    </div>
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+        <div class="hero-line"></div>
+        <p class="hero-tagline">The ultimate gambling experience</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN GAME PAGE (Coinflip / Mines / Jackpot) -->
+<div id="coinflipPage" class="main-page" style="display:none;">
+  <!-- SITE NOTIF -->
+  <div id="siteNotif" class="site-notif" style="display:none;">
+    <div class="site-notif-inner">
+      <span class="site-notif-sender" id="siteNotifSender"></span>
+      <span id="siteNotifText"></span>
+    </div>
+    <button onclick="dismissNotif()">✕</button>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="online-dot"></div>
+      <span class="sidebar-title">Live Chat</span>
+      <span class="sidebar-count" id="onlineCountCF">0 online</span>
+    </div>
+    <div class="chat-messages" id="chatMessagesCF"></div>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Message..." maxlength="200" onkeydown="if(event.key==='Enter') sendChat()"/>
+        <button class="chat-send-btn" onclick="sendChat()">→</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" id="cfContent">
+    <div class="navbar">
+      <!-- LEFT: logo + game tabs -->
+      <div class="nav-left">
+        <div class="nav-logo" onclick="showGame('coinflip')" style="cursor:pointer;"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+        <div class="nav-game-links">
+          <button class="nav-link active-link" id="navCoinflip" onclick="showGame('coinflip')">Coinflip</button>
+          <button class="nav-link" id="navJackpot" onclick="showGame('jackpot')">Jackpot</button>
+        </div>
+      </div>
+      <!-- RIGHT: socials + leaderboard + user -->
+      <div class="nav-right">
+        <button class="nav-icon-btn" onclick="openLeaderboard()" title="Leaderboard">🏆</button>
+        <button class="nav-icon-btn" onclick="window.open('https://discord.gg/invite','_blank')" title="Discord">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        </button>
+        <div class="nav-user-info">
+          <img id="navAvatar" src="" alt="" onclick="openProfileModal()" style="cursor:pointer;display:none;"/>
+          <span id="navUsername" onclick="openProfileModal()" style="cursor:pointer;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COINFLIP GAME -->
+    <div id="gameCoinflip" class="game-panel">
+      <div class="cf-page">
+        <div class="cf-header">
+          <h2 class="cf-title">Coinflip</h2>
+          <div class="cf-header-btns">
+            <button class="btn-create-cf" onclick="openCreateCF()">+ Create Coinflip</button>
+            <button class="btn-cf-history" onclick="openCFHistory()">History</button>
+          </div>
+        </div>
+        <div class="cf-list" id="cfList">
+          <div class="cf-skeleton"></div>
+          <div class="cf-skeleton"></div>
+          <div class="cf-skeleton"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- JACKPOT GAME -->
+    <div id="gameJackpot" class="game-panel" style="display:none;">
+      <div class="jp-page">
+        <div class="jp-layout">
+          <!-- Left: donut spinner -->
+          <div class="jp-donut-col">
+            <div class="jp-donut-wrap">
+              <canvas id="jpCanvas" width="400" height="400"></canvas>
+              <div class="jp-donut-center">
+                <div class="jp-donut-gem">💎</div>
+                <div class="jp-donut-pot" id="jpPotValue">0.0</div>
+                <div class="jp-donut-info" id="jpDonutInfo">0 | 120s</div>
+              </div>
+              <div class="jp-donut-marker">▼</div>
+            </div>
+          </div>
+          <!-- Right: join + player list -->
+          <div class="jp-right-col">
+            <button class="jp-join-btn" id="jpJoinBtn" onclick="joinJackpot()">JOIN</button>
+            <div class="jp-players" id="jpPlayers">
+              <div class="cf-empty"><p>No players yet</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CF BATTLE MODAL -->
+<div id="cfBattleModal" class="modal-overlay" style="display:none;" onclick="closeCFBattleOutside(event)">
+  <div class="cf-battle-box">
+    <button class="modal-close" onclick="closeCFBattle()">&times;</button>
+    <div class="cf-battle-header">
+      <span class="cf-battle-title">Coinflip</span>
+      <span class="cf-battle-id" id="cfBattleId"></span>
+    </div>
+    <!-- Coin animation -->
+    <div class="cf-coin-wrap" id="cfCoinWrap" style="display:none;">
+      <div class="cf-coin" id="cfCoin">
+        <div class="cf-coin-face heads">H</div>
+        <div class="cf-coin-face tails">T</div>
+      </div>
+    </div>
+    <div class="cf-battle-vs-row" id="cfBattleVsRow">
+      <div class="cf-battle-player" id="cfBattleLeft">
+        <img class="cf-battle-avatar" id="cfBattleLeftAvatar" src="" alt=""/>
+        <div class="cf-battle-name" id="cfBattleLeftName"></div>
+        <div class="cf-battle-side-tag" id="cfBattleLeftSide"></div>
+      </div>
+      <div class="cf-battle-vs">VS</div>
+      <div class="cf-battle-player" id="cfBattleRight">
+        <div class="cf-battle-avatar-placeholder" id="cfBattleRightPlaceholder">?</div>
+        <img class="cf-battle-avatar" id="cfBattleRightAvatar" src="" alt="" style="display:none;"/>
+        <div class="cf-battle-name" id="cfBattleRightName">Waiting...</div>
+        <div class="cf-battle-side-tag" id="cfBattleRightSide"></div>
+      </div>
+    </div>
+    <div class="cf-battle-items" id="cfBattleItems"></div>
+    <!-- Provably fair hash (shown before result) -->
+    <div class="cf-fair-row" id="cfFairRow" style="display:none;">
+      <span class="cf-fair-label">🔒 Server Seed Hash:</span>
+      <span class="cf-fair-hash" id="cfFairHash"></span>
+    </div>
+    <!-- Provably fair reveal (shown after result) -->
+    <div class="cf-fair-reveal" id="cfFairReveal" style="display:none;">
+      <div class="cf-fair-line"><span>Server Seed:</span><span id="cfRevealSeed"></span></div>
+      <div class="cf-fair-line"><span>Client Seed:</span><span id="cfRevealClient"></span></div>
+      <div class="cf-fair-line"><span>Nonce:</span><span id="cfRevealNonce"></span></div>
+    </div>
+    <button class="cf-battle-join-btn" id="cfBattleJoinBtn" style="display:none;" onclick="joinFromBattle()">Join Coinflip</button>
+    <div class="cf-battle-result" id="cfBattleResult" style="display:none;">
+      <div class="cf-battle-result-text" id="cfBattleResultText"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LEADERBOARD MODAL -->
+<div id="leaderboardModal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeLeaderboard()">
+  <div class="lb-box">
+    <button class="modal-close" onclick="closeLeaderboard()">&times;</button>
+    <div class="lb-header">
+      <div class="modal-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+      <p class="modal-subtitle">Leaderboards</p>
+    </div>
+    <div class="lb-tabs">
+      <button class="lb-tab active" onclick="lbTab('bet',this)">💰 Most Bet</button>
+      <button class="lb-tab" onclick="lbTab('profit',this)">📈 Most Profit</button>
+      <button class="lb-tab" onclick="lbTab('streak',this)">🔥 Best Streak</button>
+    </div>
+    <div id="lbList" class="lb-list">
+      <div class="cf-skeleton"></div><div class="cf-skeleton"></div><div class="cf-skeleton"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CF HISTORY MODAL -->
+<div id="cfHistoryModal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeCFHistory()">
+  <div class="lb-box">
+    <button class="modal-close" onclick="closeCFHistory()">&times;</button>
+    <div class="lb-header">
+      <div class="modal-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+      <p class="modal-subtitle">Coinflip History</p>
+    </div>
+    <div id="cfHistoryModalList" class="lb-list">
+      <p style="color:rgba(168,85,247,0.4);font-size:13px;padding:12px;">No flips yet.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal-overlay" style="display:none;" onclick="closeProfileModalOutside(event)">
+  <div class="profile-modal-box">
+    <button class="modal-close" onclick="closeProfileModal()">&times;</button>
+    <div class="pm-header">
+      <img id="pmAvatar" src="" alt="" class="pm-avatar"/>
+      <div class="pm-header-text">
+        <div id="pmUsername" class="pm-username"></div>
+        <div id="pmRole" class="pm-role"></div>
+      </div>
+    </div>
+    <div class="pm-tabs">
+      <button class="pm-tab active" onclick="pmSwitchTab('stats',this)">Stats</button>
+      <button class="pm-tab" onclick="pmSwitchTab('inventory',this)">Inventory</button>
+      <button class="pm-tab" id="pmAdminTabBtn" onclick="pmSwitchTab('admin',this)" style="display:none;">⭐ Admin</button>
+    </div>
+    <div id="pmStats" class="pm-content">
+      <div class="pm-stats-grid">
+        <div class="pm-stat"><span class="pm-stat-label">Total Bet</span><span class="pm-stat-val" id="pmTotalVal">0</span></div>
+        <div class="pm-stat"><span class="pm-stat-label">Wins</span><span class="pm-stat-val green" id="pmWins">0</span></div>
+        <div class="pm-stat"><span class="pm-stat-label">Losses</span><span class="pm-stat-val red" id="pmLosses">0</span></div>
+        <div class="pm-stat"><span class="pm-stat-label">Total Flips</span><span class="pm-stat-val" id="pmFlips">0</span></div>
+        <div class="pm-stat" style="grid-column:span 2;"><span class="pm-stat-label">Profit</span><span class="pm-stat-val" id="pmProfit">0</span></div>
+      </div>
+    </div>
+    <div id="pmInventory" class="pm-content" style="display:none;">
+      <div id="pmInvList" class="pm-inv-list"><p class="pm-inv-empty">No items in your inventory :(</p></div>
+      <div class="pm-inv-actions">
+        <button class="pm-action-btn deposit" onclick="openDepositModal()">⬇ Deposit</button>
+        <button class="pm-action-btn withdraw" disabled>⬆ Withdraw <span class="soon-tag">Soon</span></button>
+      </div>
+    </div>
+    <div id="pmAdmin" class="pm-content" style="display:none;">
+      <div class="admin-card" id="maintCard" style="display:none;">
+        <div class="admin-card-label">🔧 Maintenance Mode</div>
+        <div class="admin-maint-row">
+          <span class="admin-maint-status" id="maintStatus">Off</span>
+          <button class="admin-maint-btn" id="maintToggleBtn" onclick="toggleMaintenance()">Enable</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-label">📢 Broadcast Announcement</div>
+        <input type="text" id="adminNotifInput" class="modal-input" placeholder="Message to all users..."/>
+        <button class="admin-send-btn" onclick="sendSiteNotif()">Send to Everyone</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-label">🎯 User Actions</div>
+        <input type="text" id="adminTargetUser" class="modal-input" placeholder="Roblox username (e.g. Builderman)"/>
+        <div class="admin-duration-row">
+          <span class="admin-dur-label">Duration:</span>
+          <div class="admin-dur-btns">
+            <button class="dur-btn active" onclick="selectDuration(this,'1h')">1h</button>
+            <button class="dur-btn" onclick="selectDuration(this,'6h')">6h</button>
+            <button class="dur-btn" onclick="selectDuration(this,'24h')">24h</button>
+            <button class="dur-btn" onclick="selectDuration(this,'7d')">7d</button>
+            <button class="dur-btn" onclick="selectDuration(this,'30d')">30d</button>
+            <button class="dur-btn" onclick="selectDuration(this,'perm')">Perm</button>
+          </div>
+        </div>
+        <input type="text" id="adminReason" class="modal-input" placeholder="Ban reason (required for bans)..." style="margin-top:4px;"/>
+        <div class="admin-btn-grid">
+          <button class="admin-act ban"  onclick="adminAction('ban')">🚫 Ban</button>
+          <button class="admin-act mute" onclick="adminAction('mute')">🔇 Mute</button>
+        </div>
+        <p style="font-size:11px;color:rgba(168,85,247,0.4);margin-top:4px;">Click again to unban/unmute. Bans require a reason.</p>
+        <div id="adminActionMsg" class="admin-msg" style="display:none;"></div>
+      </div>
+    </div>
+    <div class="pm-footer">
+      <button class="pm-logout-btn" onclick="doLogout()">← Logout</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- DEPOSIT MODAL -->
+<div id="depositModal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeDepositModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeDepositModal()">&times;</button>
+    <div class="modal-header">
+      <div class="modal-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+      <p class="modal-subtitle">Deposit Items</p>
+    </div>
+    <p class="deposit-info">Add one of our bots on Roblox and send a trade to deposit your items.</p>
+    <div class="deposit-bots">
+      <div class="deposit-bot-row">
+        <div class="deposit-bot-left">
+          <div class="deposit-bot-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5.164 0L.001 18.395 18.839 24l5.163-18.395L5.164 0zm7.478 15.876l-4.893-1.36 1.363-4.878 4.893 1.36-1.363 4.878z"/></svg></div>
+          <div><div class="deposit-bot-name">GambitBot_1</div><div class="deposit-bot-status online">● Online</div></div>
+        </div>
+        <a href="https://www.roblox.com/users/search?keyword=GambitBot_1" target="_blank" class="deposit-bot-btn">Add on Roblox</a>
+      </div>
+      <div class="deposit-bot-row">
+        <div class="deposit-bot-left">
+          <div class="deposit-bot-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5.164 0L.001 18.395 18.839 24l5.163-18.395L5.164 0zm7.478 15.876l-4.893-1.36 1.363-4.878 4.893 1.36-1.363 4.878z"/></svg></div>
+          <div><div class="deposit-bot-name">GambitBot_2</div><div class="deposit-bot-status online">● Online</div></div>
+        </div>
+        <a href="https://www.roblox.com/users/search?keyword=GambitBot_2" target="_blank" class="deposit-bot-btn">Add on Roblox</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYER POPUP -->
+<div id="playerPopup" class="player-popup" style="display:none;" onclick="closePlayerPopup(event)">
+  <div class="player-popup-box">
+    <button class="modal-close" onclick="closePlayerPopupDirect()">&times;</button>
+    <img id="ppAvatar" src="" alt="" class="pp-avatar"/>
+    <div id="ppUsername" class="pp-username"></div>
+    <div id="ppRoleBadge" class="pp-role-badge" style="display:none;"></div>
+    <div class="pp-stats">
+      <div class="pp-stat"><span>Wins</span><span class="green" id="ppWins">0</span></div>
+      <div class="pp-stat"><span>Losses</span><span class="red" id="ppLosses">0</span></div>
+      <div class="pp-stat"><span>Total Flips</span><span id="ppFlips">0</span></div>
+      <div class="pp-stat"><span>Total Bet</span><span id="ppVal">0</span></div>
+      <div class="pp-stat"><span>Profit</span><span id="ppProfit">0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN IN MODAL -->
+<div id="modal" class="modal-overlay" style="display:none;" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div id="stepChoose">
+      <div class="modal-header">
+        <div class="modal-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+        <p class="modal-subtitle">Sign in to continue</p>
+      </div>
+      <button class="btn-roblox" onclick="goStep(1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5.164 0L.001 18.395 18.839 24l5.163-18.395L5.164 0zm7.478 15.876l-4.893-1.36 1.363-4.878 4.893 1.36-1.363 4.878z"/></svg>
+        Sign in with Roblox
+      </button>
+      <button class="btn-discord" disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Sign in with Discord <span class="coming-soon">Coming soon</span>
+      </button>
+      <p class="modal-terms">By signing in you agree to our Terms of Service</p>
+    </div>
+    <div id="stepUsername" style="display:none;">
+      <div class="modal-header">
+        <div class="modal-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+        <p class="modal-subtitle">Enter your Roblox username</p>
+      </div>
+      <input type="text" id="robloxUsernameInput" class="modal-input" placeholder="e.g. My_username123" onkeydown="if(event.key==='Enter') lookupUser()"/>
+      <div id="lookupError" class="modal-error" style="display:none;"></div>
+      <button class="btn-roblox" id="lookupBtn" onclick="lookupUser()"><span id="lookupBtnText">Search</span></button>
+      <button class="modal-back" onclick="goStep(0)">← Back</button>
+    </div>
+    <div id="stepConfirm" style="display:none;">
+      <div class="modal-header">
+        <div class="modal-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+        <p class="modal-subtitle">Is this you?</p>
+      </div>
+      <div class="account-card">
+        <img id="confirmAvatar" src="" alt="avatar" class="account-avatar"/>
+        <div><div id="confirmUsername" class="account-name"></div><div id="confirmId" class="account-id"></div></div>
+      </div>
+      <button class="btn-roblox" onclick="generatePhrase()">Yes, that's me!</button>
+      <button class="modal-back" onclick="goStep(1)">← Not me</button>
+    </div>
+    <div id="stepVerify" style="display:none;">
+      <div class="modal-header">
+        <div class="modal-logo"><span class="logo-white">Gambit</span><span class="logo-purple">.gg</span></div>
+        <p class="modal-subtitle">Paste this into your Roblox profile description</p>
+      </div>
+      <div class="phrase-box">
+        <p id="verifyPhrase" class="phrase-text"></p>
+        <button class="phrase-copy-btn" onclick="copyPhrase()">Copy</button>
+      </div>
+      <a id="profileLink" href="#" target="_blank" class="profile-link">Open my Roblox profile →</a>
+      <div id="verifyError" class="modal-error" style="display:none;"></div>
+      <div id="verifySuccess" class="modal-success" style="display:none;">✓ Verified! Logging in...</div>
+      <button class="btn-roblox" id="verifyBtn" onclick="verifyPhrase()"><span id="verifyBtnText">Verify</span></button>
+      <button class="modal-back" onclick="generatePhrase()">↻ New Phrase</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE CF MODAL -->
+<div id="createCFModal" class="modal-overlay" style="display:none;" onclick="closeCreateCFOutside(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeCreateCF()">&times;</button>
+    <div class="modal-header">
+      <p class="modal-subtitle" style="font-size:16px;color:#d8b4fe;font-weight:700;letter-spacing:0;">Create Coinflip</p>
+    </div>
+    <label class="cf-label">Choose your side</label>
+    <div class="side-picker">
+      <button class="side-btn" id="sideHeads" onclick="selectSide('heads')">🔴 Heads</button>
+      <button class="side-btn" id="sideTails" onclick="selectSide('tails')">🔵 Tails</button>
+    </div>
+    <div id="cfCreateError" class="modal-error" style="display:none;"></div>
+    <button class="btn-roblox" onclick="submitCreateCF()">Create Flip</button>
+  </div>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
